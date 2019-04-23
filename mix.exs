@@ -22,7 +22,7 @@ defmodule MagicFlute.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:midi_synth, "~> 0.1"}
+      {:midi_synth, path: "../midi_synth"}
     ]
   end
 end

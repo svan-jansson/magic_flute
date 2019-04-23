@@ -41,13 +41,13 @@ defmodule MagicFlute.Player do
         :noop
       end
 
-      def play_note(note, duration) do
-        MagicFlute.Instrument.play(note, duration, @instrument)
+      def play_note(note, duration, velocity) do
+        MagicFlute.Instrument.play(note, duration, velocity, @instrument)
       end
 
-      def play_chord(notes, duration) do
+      def play_chord(notes, duration, velocity) do
         Enum.map(notes, fn note ->
-          Task.async(fn -> play_note(note, duration) end)
+          Task.async(fn -> play_note(note, duration, velocity) end)
         end)
         |> Enum.each(&Task.await/1)
       end

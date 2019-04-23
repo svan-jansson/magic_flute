@@ -1,10 +1,37 @@
 defmodule MagicFlute.Instrument do
   @moduledoc """
-  Settings, assuming an interface that follows General MIDI
 
-  https://en.wikipedia.org/wiki/General_MIDI
+  ## General MIDI
+  The `MagicFlute.Instrument` assumes that .sf2 synthethiser follows [General MIDI](https://en.wikipedia.org/wiki/General_MIDI)
 
-  Piano
+  ## Musical Dynamics
+
+  The velocities are defined according to **Logic Pro 9 dynamics**. Source: [Musical Dynamics on Wikipedia](https://en.wikipedia.org/wiki/Dynamics_(music)).
+
+  ```
+  :ppp  # 16
+  :pp   # 32
+  :p    # 48
+  :mp   # 64
+  :mf   # 80
+  ;f    # 96
+  :ff   # 112
+  :fff  # 127
+  ```
+
+  ## Instrument Sounds and Variants
+
+  ### Format
+
+  ```
+  Sound
+  1 Variant 1
+  2 Variant 2
+  ```
+
+  ### Options
+
+  #### Piano
 
   1 Acoustic Grand Piano
   2 Bright Acoustic Piano
@@ -15,7 +42,7 @@ defmodule MagicFlute.Instrument do
   7 Harpsichord
   8 Clavinet
 
-  Chromatic Percussion
+  #### Chromatic Percussion
 
   9 Celesta
   10 Glockenspiel
@@ -26,7 +53,7 @@ defmodule MagicFlute.Instrument do
   15 Tubular Bells
   16 Dulcimer
 
-  Organ
+  #### Organ
 
   17 Drawbar Organ
   18 Percussive Organ
@@ -37,7 +64,7 @@ defmodule MagicFlute.Instrument do
   23 Harmonica
   24 Tango Accordion
 
-  Guitar
+  #### Guitar
 
   25 Acoustic Guitar (nylon)
   26 Acoustic Guitar (steel)
@@ -48,7 +75,7 @@ defmodule MagicFlute.Instrument do
   31 Distortion Guitar
   32 Guitar Harmonics
 
-  Bass
+  #### Bass
 
   33 Acoustic Bass
   34 Electric Bass (finger)
@@ -59,7 +86,7 @@ defmodule MagicFlute.Instrument do
   39 Synth Bass 1
   40 Synth Bass 2
 
-  Strings
+  #### Strings
 
   41 Violin
   42 Viola
@@ -70,7 +97,7 @@ defmodule MagicFlute.Instrument do
   47 Orchestral Harp
   48 Timpani
 
-  Ensemble
+  #### Ensemble
 
   49 String Ensemble 1
   50 String Ensemble 2
@@ -81,7 +108,7 @@ defmodule MagicFlute.Instrument do
   55 Synth Choir
   56 Orchestra Hit
 
-  Brass
+  #### Brass
 
   57 Trumpet
   58 Trombone
@@ -92,7 +119,7 @@ defmodule MagicFlute.Instrument do
   63 Synth Brass 1
   64 Synth Brass 2
 
-  Reed
+  #### Reed
 
   65 Soprano Sax
   66 Alto Sax
@@ -103,7 +130,7 @@ defmodule MagicFlute.Instrument do
   71 Bassoon
   72 Clarinet
 
-  Pipe
+  #### Pipe
 
   73 Piccolo
   74 Flute
@@ -114,7 +141,7 @@ defmodule MagicFlute.Instrument do
   79 Whistle
   80 Ocarina
 
-  Synth Lead
+  #### Synth Lead
 
   81 Lead 1 (square)
   82 Lead 2 (sawtooth)
@@ -125,7 +152,7 @@ defmodule MagicFlute.Instrument do
   87 Lead 7 (fifths)
   88 Lead 8 (bass + lead)
 
-  Synth Pad
+  #### Synth Pad
 
   89 Pad 1 (new age)
   90 Pad 2 (warm)
@@ -136,7 +163,7 @@ defmodule MagicFlute.Instrument do
   95 Pad 7 (halo)
   96 Pad 8 (sweep)
 
-  Synth Effects
+  #### Synth Effects
 
   97 FX 1 (rain)
   98 FX 2 (soundtrack)
@@ -147,7 +174,7 @@ defmodule MagicFlute.Instrument do
   103 FX 7 (echoes)
   104 FX 8 (sci-fi)
 
-  Ethnic
+  #### Ethnic
 
   105 Sitar
   106 Banjo
@@ -158,7 +185,7 @@ defmodule MagicFlute.Instrument do
   111 Fiddle
   112 Shanai
 
-  Percussive
+  #### Percussive
 
   113 Tinkle Bell
   114 Agogo
@@ -169,7 +196,7 @@ defmodule MagicFlute.Instrument do
   119 Synth Drum
   120 Reverse Cymbal
 
-  Sound effects
+  #### Sound effects
 
   121 Guitar Fret Noise
   122 Breath Noise
@@ -199,18 +226,33 @@ defmodule MagicFlute.Instrument do
     percussive: 113..120,
     sound_effects: 121..128
   }
+  @velocities %{
+    ppp: 16,
+    pp: 32,
+    p: 48,
+    mp: 64,
+    mf: 80,
+    f: 96,
+    ff: 112,
+    fff: 127
+  }
 
-  def play(note, duration, _instrument = {sound, variant}),
-    do: apply_note(note, duration, Map.get(@sounds, sound), variant)
+  def play(note, duration, velocity, instrument) when is_atom(velocity) do
+    play(note, duration, Map.get(@velocities, velocity), instrument)
+  end
 
-  defp apply_note(note, duration, start_range.._, variant) when variant <= 7 do
+  def play(note, duration, velocity, _instrument = {sound, variant}) do
+    apply_note(note, duration, velocity, Map.get(@sounds, sound), variant)
+  end
+
+  defp apply_note(note, duration, velocity, start_range.._, variant) when variant <= 7 do
     start_range
     |> Kernel.+(variant)
     |> MidiSynth.change_program()
 
-    MidiSynth.play(note, duration)
+    MidiSynth.play(note, duration, velocity)
     :noop
   end
 
-  defp apply_note(_, _, _, _), do: :invalid_instrument
+  defp apply_note(_, _, _, _, _), do: :invalid_instrument_sound
 end
