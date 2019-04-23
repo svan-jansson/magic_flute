@@ -1,13 +1,18 @@
 defmodule MagicFlute do
-  alias MagicFlute.{Conductor, Ensemble, Performance}
+  alias MagicFlute.{Conductor, DemoEnsemble}
 
-  def start_performance(bpm, signature \\ {4, 4}) do
-    Conductor.add_player(Ensemble.PianoPlayer)
-    Conductor.add_player(Ensemble.BassPlayer)
-    Conductor.add_player(Ensemble.KickPlayer)
-    Conductor.add_player(Ensemble.SnarePlayer)
-    Conductor.add_player(Ensemble.HiHatPlayer)
+  def demo() do
+    players = [
+      DemoEnsemble.PianoPlayer,
+      DemoEnsemble.BassPlayer,
+      DemoEnsemble.KickPlayer,
+      DemoEnsemble.SnarePlayer,
+      DemoEnsemble.HiHatPlayer
+    ]
 
-    Performance.start(bpm, signature)
+    bpm = 120
+    signature = {4, 4}
+
+    Conductor.start_performance(players, bpm, signature)
   end
 end

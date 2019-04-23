@@ -1,4 +1,4 @@
-defmodule MagicFlute.Ensemble.SnarePlayer do
+defmodule MagicFlute.DemoEnsemble.SnarePlayer do
   use MagicFlute.Player, instrument: {:percussive, 6}
 
   def play(_bar, beat) when beat == 9 do

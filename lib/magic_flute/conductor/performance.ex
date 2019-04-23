@@ -1,48 +1,47 @@
-defmodule MagicFlute.Performance do
+defmodule MagicFlute.Conductor.Performance do
   use GenServer
 
   @init_state %{
-    status: :stopped,
-    position: {0, 1},
+    status: :started,
+    position: {1, 1},
     beats_per_bar: 16,
     bpm: 120
   }
 
-  def start_link(opts \\ []) do
-    GenServer.start_link(__MODULE__, [], opts)
+  def child_spec(bpm, signature) do
+    %{
+      id: __MODULE__,
+      start: {__MODULE__, :start_link, [bpm, signature]},
+      type: :supervisor
+    }
   end
 
-  def init(_args) do
-    {:ok, @init_state}
-  end
-
-  def start(bpm, {bars, beats}) do
+  def start_link(bpm, {bars, beats}) do
     state =
       @init_state
       |> Map.put(:bpm, bpm)
       |> Map.put(:beats_per_bar, bars * beats)
 
-    GenServer.call(__MODULE__, {:start, state})
+    result = GenServer.start_link(__MODULE__, nil, name: __MODULE__)
+    Process.send_after(__MODULE__, {:new_bar, state}, 500)
+    result
+  end
+
+  def init(nil) do
+    {:ok, nil}
   end
 
   def stop() do
     GenServer.stop(__MODULE__)
   end
 
-  def handle_call({:start, state}, _from, _state) do
-    {:reply, :ok,
-     state
-     |> Map.put(:status, :started)
-     |> schedule_beats()}
+  def handle_info({:new_bar, state}, _state) do
+    {:noreply, state |> schedule_beats()}
   end
 
   def handle_info({:beat, {bar, beat}}, state) do
-    MagicFlute.Conductor.tick_event(bar, beat)
+    MagicFlute.Conductor.Instructions.signal(bar, beat)
     {:noreply, state}
-  end
-
-  def handle_info({:new_bar, state}, _state) do
-    {:noreply, state |> schedule_beats()}
   end
 
   defp schedule_beats(

@@ -26,7 +26,7 @@ defmodule MagicFlute.Player do
         {:ok, nil}
       end
 
-      def handle_cast({:conductor_tick, bar, beat}, state) do
+      def handle_cast({:signal, bar, beat}, state) do
         play(bar, beat)
         {:noreply, state}
       end

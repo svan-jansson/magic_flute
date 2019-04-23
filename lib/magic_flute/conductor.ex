@@ -1,7 +1,8 @@
 defmodule MagicFlute.Conductor do
-  @timeout 30_000
-
   use DynamicSupervisor
+  alias MagicFlute.Conductor.{Performance, Instructions}
+
+  @timeout 30_000
 
   def start_link(_arg) do
     DynamicSupervisor.start_link(__MODULE__, :ok, name: __MODULE__)
@@ -11,27 +12,21 @@ defmodule MagicFlute.Conductor do
     DynamicSupervisor.init(strategy: :one_for_one)
   end
 
-  def stop() do
-    for {_, pid, _, _} <- DynamicSupervisor.which_children(__MODULE__) do
-      GenServer.stop(pid, :normal, @timeout)
-    end
+  def start_performance(players, bpm, signature) do
+    clear_children()
+    DynamicSupervisor.start_child(__MODULE__, Performance.child_spec(bpm, signature))
+    DynamicSupervisor.start_child(__MODULE__, Instructions.child_spec(players))
+  end
+
+  def end_performance() do
+    clear_children()
 
     DynamicSupervisor.stop(__MODULE__)
   end
 
-  def add_player(child_spec) do
-    DynamicSupervisor.start_child(__MODULE__, child_spec)
-  end
-
-  def tick_event(bar, beat) do
-    notify_players(bar, beat)
-  end
-
-  defp notify_players(bar, beat) do
+  defp clear_children do
     for {_, pid, _, _} <- DynamicSupervisor.which_children(__MODULE__) do
-      GenServer.cast(pid, {:conductor_tick, bar, beat})
+      GenServer.stop(pid, :normal, @timeout)
     end
-
-    :ok
   end
 end

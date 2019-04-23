@@ -7,7 +7,6 @@ defmodule MagicFlute.Application do
 
   def start(_type, _args) do
     children = [
-      {MagicFlute.Performance, [name: MagicFlute.Performance]},
       {MagicFlute.Conductor, [name: MagicFlute.Conductor]}
     ]
 

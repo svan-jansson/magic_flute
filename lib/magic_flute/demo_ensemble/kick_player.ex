@@ -1,4 +1,4 @@
-defmodule MagicFlute.Ensemble.KickPlayer do
+defmodule MagicFlute.DemoEnsemble.KickPlayer do
   use MagicFlute.Player, instrument: {:percussive, 5}
 
   def play(_bar, beat) when beat == 1 do
