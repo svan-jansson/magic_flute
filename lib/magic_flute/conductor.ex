@@ -13,15 +13,24 @@ defmodule MagicFlute.Conductor do
   end
 
   def start_performance(players, bpm, signature) do
-    clear_children()
+    %{active: active} = DynamicSupervisor.count_children(__MODULE__)
+    start(players, bpm, signature, active > 0)
+  end
+
+  defp start(players, bpm, signature, _running = false) do
     DynamicSupervisor.start_child(__MODULE__, Performance.child_spec(bpm, signature))
     DynamicSupervisor.start_child(__MODULE__, Instructions.child_spec(players))
+    {:ok, :started}
+  end
+
+  defp start(_players, _bpm, _signature, _running = true) do
+    {:error, :already_started}
   end
 
   def end_performance() do
     clear_children()
-
     DynamicSupervisor.stop(__MODULE__)
+    {:ok, :ended}
   end
 
   defp clear_children do
