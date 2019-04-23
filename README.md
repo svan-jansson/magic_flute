@@ -2,6 +2,26 @@
 
 Play music using Elixir
 
+## Visual Model
+
+```text
++-------------+
+|             |
+|  Conductor  | Keeps track of beat
+|             |
++------+------+
+       |
+       |
+       | Timing instructions
+       |
+       v
++------+------+
+|             |
+|  Player(s)  | Plays after sheet notes
+|             | using timing from Conductor
++-------------+
+```
+
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
