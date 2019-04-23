@@ -16,11 +16,11 @@ defmodule MagicFlute.Conductor.Performance do
     }
   end
 
-  def start_link(bpm, {bars, beats}) do
+  def start_link(bpm, signature) do
     state =
       @init_state
       |> Map.put(:bpm, bpm)
-      |> Map.put(:beats_per_bar, bars * beats)
+      |> Map.put(:signature, signature)
 
     result = GenServer.start_link(__MODULE__, nil, name: __MODULE__)
     Process.send_after(__MODULE__, {:new_bar, state}, 500)
@@ -47,18 +47,19 @@ defmodule MagicFlute.Conductor.Performance do
   defp schedule_beats(
          state = %{
            bpm: bpm,
-           beats_per_bar: beats_per_bar,
+           signature: {signature_beat, signature_subdivision},
            position: {bar, _beat}
          }
        ) do
-    bar_length = bpm_to_ms(bpm)
-    beat_length = (bar_length / beats_per_bar) |> Kernel.trunc()
+    bar_length = bpm_to_ms(bpm) * signature_beat
+    subdivisions = signature_beat * signature_subdivision
+    beat_length = (bar_length / subdivisions) |> Kernel.trunc()
 
     # Schedule next whole beat
     Process.send_after(__MODULE__, {:new_bar, %{state | position: {bar + 1, 1}}}, bar_length)
 
     # Schedule current beat's subdivisions
-    Enum.each(1..beats_per_bar, fn beat ->
+    Enum.each(1..subdivisions, fn beat ->
       Process.send_after(__MODULE__, {:beat, {bar, beat}}, beat_length * beat)
     end)
   end

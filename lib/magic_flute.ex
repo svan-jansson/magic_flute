@@ -15,4 +15,15 @@ defmodule MagicFlute do
 
     Conductor.start_performance(players, bpm, signature)
   end
+
+  def metronome() do
+    players = [
+      DemoEnsemble.MetronomePlayer
+    ]
+
+    bpm = 120
+    signature = {4, 4}
+
+    Conductor.start_performance(players, bpm, signature)
+  end
 end
