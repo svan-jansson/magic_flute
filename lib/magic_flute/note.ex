@@ -57,11 +57,36 @@ defmodule MagicFlute.Note do
     {"b", 11}
   ]
 
+  @scales %{
+    major: [0, 2, 2, 1, 2, 2, 2, 1],
+    minor: [0, 2, 1, 2, 2, 1, 2, 2],
+    minor_harmonic: [0, 2, 1, 2, 2, 1, 3, 1],
+    minor_melodic: [0, 2, 1, 2, 2, 2, 2, 1]
+  }
+
   def sigil_n(string, []) when is_binary(string) do
     string
     |> String.split()
     |> List.to_tuple()
     |> parse_new()
+  end
+
+  def scale(scale, key, range \\ -2..8) do
+    ratios = Map.get(@scales, scale, :invalid_scale)
+    base_note = parse_base_note(key)
+
+    Enum.map(range, fn octave ->
+      base_in_octave = calculate_note(base_note, octave)
+
+      {notes, _} =
+        Enum.reduce(ratios, {[], base_in_octave}, fn ratio, {acc, base} ->
+          {[base + ratio | acc], base + ratio}
+        end)
+
+      notes |> Enum.reverse()
+    end)
+    |> List.flatten()
+    |> Enum.uniq()
   end
 
   defp parse_new({note_string, duration_string, velocity_string}) do
@@ -85,8 +110,7 @@ defmodule MagicFlute.Note do
   end
 
   defp parse_note(base_note_string, octave_string) do
-    base_note = Map.get(@notes |> Map.new(), base_note_string, :invalid_note)
-    # adjust for c-2 == 0
+    base_note = parse_base_note(base_note_string)
     octave = String.to_integer(octave_string)
     calculate_note(base_note, octave)
   end
@@ -125,5 +149,9 @@ defmodule MagicFlute.Note do
 
   defp parse_velocity(velocity_string) do
     Map.get(@velocities, String.to_atom(velocity_string), :invalid_velocity)
+  end
+
+  defp parse_base_note(base_note_string) do
+    Map.get(@notes |> Map.new(), base_note_string, :invalid_note)
   end
 end
