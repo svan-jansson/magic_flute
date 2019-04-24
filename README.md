@@ -1,6 +1,6 @@
 # MagicFlute
 
-Play music using Elixir
+Play music programatically with Elixir
 
 ## Visual Model
 
