@@ -3,10 +3,10 @@ defmodule MagicFlute.DemoEnsemble.PianoPlayer do
 
   def read_notes(bar, 13) when rem(bar, 2) > 0 do
     [
-      {60, 100, :mp},
-      {63, 100, :mp},
-      {65, 100, :mp},
-      {67, 100, :mp}
+      ~n(c3 100 mp),
+      ~n(d#3 100 mp),
+      ~n(f3 100 mp),
+      ~n(g#3 100 mp)
     ]
   end
 end

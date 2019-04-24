@@ -2,6 +2,8 @@ defmodule MagicFlute.Player do
   defmacro __using__(opts) do
     quote bind_quoted: [opts: opts] do
       import MagicFlute.Player
+      import MagicFlute.Note
+
       use GenServer
 
       @instrument Keyword.get(opts, :instrument)

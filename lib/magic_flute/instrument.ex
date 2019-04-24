@@ -4,21 +4,6 @@ defmodule MagicFlute.Instrument do
   ## General MIDI
   The `MagicFlute.Instrument` assumes that .sf2 synthethiser follows [General MIDI](https://en.wikipedia.org/wiki/General_MIDI)
 
-  ## Musical Dynamics
-
-  The velocities are defined according to **Logic Pro 9 dynamics**. Source: [Musical Dynamics on Wikipedia](https://en.wikipedia.org/wiki/Dynamics_(music)).
-
-  ```
-  :ppp  # 16
-  :pp   # 32
-  :p    # 48
-  :mp   # 64
-  :mf   # 80
-  ;f    # 96
-  :ff   # 112
-  :fff  # 127
-  ```
-
   ## Instrument Sounds and Variants
 
   ### Format
@@ -226,32 +211,9 @@ defmodule MagicFlute.Instrument do
     percussive: 113..120,
     sound_effects: 121..128
   }
-  @velocities %{
-    ppp: 16,
-    pp: 32,
-    p: 48,
-    mp: 64,
-    mf: 80,
-    f: 96,
-    ff: 112,
-    fff: 127
-  }
 
-  def play(note, duration, velocity, instrument) when is_atom(velocity) do
-    play(note, duration, velocity_from_atom(velocity), instrument)
-  end
-
-  def play(note, duration, velocity, _instrument = {sound, variant})
-      when is_integer(velocity) and velocity > -1 do
+  def play(note, duration, velocity, _instrument = {sound, variant}) do
     apply_note(note, duration, velocity, sound_from_atom(sound), variant)
-  end
-
-  def play(_, _, _, _) do
-    {:error, :invalid_argument}
-  end
-
-  defp velocity_from_atom(velocity) do
-    Map.get(@velocities, velocity, -1)
   end
 
   defp sound_from_atom(sound) do
