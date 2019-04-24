@@ -1,26 +1,31 @@
 defmodule MagicFlute.Conductor.Performance do
   use GenServer
 
+  alias MagicFlute.Conductor
+
   @init_state %{
     status: :started,
     position: {1, 1},
-    beats_per_bar: 16,
-    bpm: 120
+    signature: {4, 4},
+    bpm: 120,
+    length_in_bars: 16
   }
 
-  def child_spec(bpm, signature) do
+  def child_spec(bpm, signature, length_in_bars) do
     %{
       id: __MODULE__,
-      start: {__MODULE__, :start_link, [bpm, signature]},
-      type: :supervisor
+      start: {__MODULE__, :start_link, [bpm, signature, length_in_bars]},
+      type: :supervisor,
+      restart: :transient
     }
   end
 
-  def start_link(bpm, signature) do
+  def start_link(bpm, signature, length_in_bars) do
     state =
       @init_state
       |> Map.put(:bpm, bpm)
       |> Map.put(:signature, signature)
+      |> Map.put(:length_in_bars, length_in_bars)
 
     result = GenServer.start_link(__MODULE__, nil, name: __MODULE__)
     Process.send_after(__MODULE__, {:new_bar, state}, 500)
@@ -35,12 +40,25 @@ defmodule MagicFlute.Conductor.Performance do
     GenServer.stop(__MODULE__)
   end
 
+  def handle_info(
+        {:new_bar,
+         %{
+           :length_in_bars => length_in_bars,
+           :position => {bar, _beat}
+         }},
+        state
+      )
+      when bar > length_in_bars do
+    Conductor.Instructions.stop()
+    {:stop, :normal, state}
+  end
+
   def handle_info({:new_bar, state}, _state) do
     {:noreply, state |> schedule_beats()}
   end
 
   def handle_info({:beat, {bar, beat}}, state) do
-    MagicFlute.Conductor.Instructions.signal(bar, beat)
+    Conductor.Instructions.give_instructions_to_players(bar, beat, :erlang.system_time())
     {:noreply, state}
   end
 
@@ -62,6 +80,8 @@ defmodule MagicFlute.Conductor.Performance do
     Enum.each(1..subdivisions, fn beat ->
       Process.send_after(__MODULE__, {:beat, {bar, beat}}, beat_length * beat)
     end)
+
+    state
   end
 
   defp bpm_to_ms(bpm), do: (60 / bpm * 1000) |> Kernel.trunc()

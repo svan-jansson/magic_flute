@@ -238,20 +238,33 @@ defmodule MagicFlute.Instrument do
   }
 
   def play(note, duration, velocity, instrument) when is_atom(velocity) do
-    play(note, duration, Map.get(@velocities, velocity), instrument)
+    play(note, duration, velocity_from_atom(velocity), instrument)
   end
 
-  def play(note, duration, velocity, _instrument = {sound, variant}) do
-    apply_note(note, duration, velocity, Map.get(@sounds, sound), variant)
+  def play(note, duration, velocity, _instrument = {sound, variant})
+      when is_integer(velocity) and velocity > -1 do
+    apply_note(note, duration, velocity, sound_from_atom(sound), variant)
   end
 
-  defp apply_note(note, duration, velocity, start_range.._, variant) when variant <= 7 do
-    start_range
+  def play(_, _, _, _) do
+    {:error, :invalid_argument}
+  end
+
+  defp velocity_from_atom(velocity) do
+    Map.get(@velocities, velocity, -1)
+  end
+
+  defp sound_from_atom(sound) do
+    Map.get(@sounds, sound, -1)
+  end
+
+  defp apply_note(note, duration, velocity, sound.._, variant) when variant <= 7 do
+    sound
     |> Kernel.+(variant)
     |> MidiSynth.change_program()
 
     MidiSynth.play(note, duration, velocity)
-    :noop
+    {note, duration, velocity}
   end
 
   defp apply_note(_, _, _, _, _), do: :invalid_instrument_sound

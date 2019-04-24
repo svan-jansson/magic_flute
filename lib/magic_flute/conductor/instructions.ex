@@ -7,7 +7,8 @@ defmodule MagicFlute.Conductor.Instructions do
     %{
       id: __MODULE__,
       start: {__MODULE__, :start_link, [players]},
-      type: :supervisor
+      type: :supervisor,
+      restart: :transient
     }
   end
 
@@ -19,23 +20,29 @@ defmodule MagicFlute.Conductor.Instructions do
     Supervisor.init(players, strategy: :one_for_one)
   end
 
+  def get_latency() do
+    DynamicSupervisor.which_children(__MODULE__)
+    |> Enum.map(fn {id, pid, _, _} ->
+      {id, GenServer.call(pid, :latency)}
+    end)
+  end
+
   def stop() do
-    for {_, pid, _, _} <- Supervisor.which_children(__MODULE__) do
+    DynamicSupervisor.which_children(__MODULE__)
+    |> Enum.each(fn {_, pid, _, _} ->
       GenServer.stop(pid, :normal, @timeout)
-    end
+    end)
 
     Supervisor.stop(__MODULE__)
+    :noop
   end
 
-  def signal(bar, beat) do
-    notify_players(bar, beat)
-  end
+  def give_instructions_to_players(bar, beat, timestamp) do
+    DynamicSupervisor.which_children(__MODULE__)
+    |> Enum.each(fn {_, pid, _, _} ->
+      GenServer.cast(pid, {:signal, bar, beat, timestamp})
+    end)
 
-  defp notify_players(bar, beat) do
-    for {_, pid, _, _} <- DynamicSupervisor.which_children(__MODULE__) do
-      GenServer.cast(pid, {:signal, bar, beat})
-    end
-
-    :ok
+    :noop
   end
 end

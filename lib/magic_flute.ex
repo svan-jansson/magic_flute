@@ -13,7 +13,7 @@ defmodule MagicFlute do
     bpm = 120
     signature = {4, 4}
 
-    Conductor.start_performance(players, bpm, signature)
+    Conductor.start_performance(players, bpm, signature, 16)
   end
 
   def metronome() do
@@ -24,6 +24,6 @@ defmodule MagicFlute do
     bpm = 120
     signature = {4, 4}
 
-    Conductor.start_performance(players, bpm, signature)
+    Conductor.start_performance(players, bpm, signature, 4)
   end
 end
