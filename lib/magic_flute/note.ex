@@ -144,7 +144,11 @@ defmodule MagicFlute.Note do
   end
 
   defp parse_duration(duration_string) do
-    String.to_integer(duration_string)
+    try do
+      String.to_integer(duration_string)
+    rescue
+      ArgumentError -> :invalid_duration
+    end
   end
 
   defp parse_velocity(velocity_string) do
