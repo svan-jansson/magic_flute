@@ -1,4 +1,6 @@
 defmodule MagicFlute.DemoEnsemble.PianoPlayer do
+  @moduledoc false
+
   use MagicFlute.Player, instrument: {:piano, 1}
 
   def read_notes(bar, 13) when rem(bar, 2) > 0 do

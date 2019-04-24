@@ -1,23 +1,25 @@
 defmodule MagicFlute.Conductor.Instructions do
+  @moduledoc false
+
   @timeout 30_000
 
   use Supervisor
 
-  def child_spec(players) do
+  def child_spec(ensemble) do
     %{
       id: __MODULE__,
-      start: {__MODULE__, :start_link, [players]},
+      start: {__MODULE__, :start_link, [ensemble]},
       type: :supervisor,
       restart: :transient
     }
   end
 
-  def start_link(players) do
-    Supervisor.start_link(__MODULE__, players, name: __MODULE__)
+  def start_link(ensemble) do
+    Supervisor.start_link(__MODULE__, ensemble, name: __MODULE__)
   end
 
-  def init(players) do
-    Supervisor.init(players, strategy: :one_for_one)
+  def init(ensemble) do
+    Supervisor.init(ensemble, strategy: :one_for_one)
   end
 
   def get_latency() do
@@ -37,7 +39,7 @@ defmodule MagicFlute.Conductor.Instructions do
     :noop
   end
 
-  def give_instructions_to_players(bar, beat, timestamp) do
+  def give_instructions_to_ensemble(bar, beat, timestamp) do
     DynamicSupervisor.which_children(__MODULE__)
     |> Enum.each(fn {_, pid, _, _} ->
       GenServer.cast(pid, {:signal, bar, beat, timestamp})

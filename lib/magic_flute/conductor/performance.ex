@@ -1,4 +1,6 @@
 defmodule MagicFlute.Conductor.Performance do
+  @moduledoc false
+
   use GenServer
 
   alias MagicFlute.Conductor
@@ -58,7 +60,7 @@ defmodule MagicFlute.Conductor.Performance do
   end
 
   def handle_info({:beat, {bar, beat}}, state) do
-    Conductor.Instructions.give_instructions_to_players(bar, beat, :erlang.system_time())
+    Conductor.Instructions.give_instructions_to_ensemble(bar, beat, :erlang.system_time())
     {:noreply, state}
   end
 

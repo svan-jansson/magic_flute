@@ -2,195 +2,197 @@ defmodule MagicFlute.Instrument do
   @moduledoc """
 
   ## General MIDI
-  The `MagicFlute.Instrument` assumes that .sf2 synthethiser follows [General MIDI](https://en.wikipedia.org/wiki/General_MIDI)
+  The `MagicFlute.Instrument` assumes that the .sf2 file contains a synthesizer that follows [General MIDI](https://en.wikipedia.org/wiki/General_MIDI)
 
   ## Instrument Sounds and Variants
 
-  ### Format
+  ### Example
+
+  General format: `{sound, variant}`
+
+  The instrument sound bank Electric Grand Piano is represented like this:
 
   ```
-  Sound
-  1 Variant 1
-  2 Variant 2
+  {:piano, 3}
   ```
 
-  ### Options
+  ### Instrument Sound Bank Variants
 
-  #### Piano
+  #### Piano (:piano)
 
-  1 Acoustic Grand Piano
-  2 Bright Acoustic Piano
-  3 Electric Grand Piano
-  4 Honky-tonk Piano
-  5 Electric Piano 1
-  6 Electric Piano 2
-  7 Harpsichord
-  8 Clavinet
+  1. Acoustic Grand Piano
+  2. Bright Acoustic Piano
+  3. Electric Grand Piano
+  4. Honky-tonk Piano
+  5. Electric Piano 1
+  6. Electric Piano 2
+  7. Harpsichord
+  8. Clavinet
 
-  #### Chromatic Percussion
+  #### Chromatic Percussion (:chromatic_percussion)
 
-  9 Celesta
-  10 Glockenspiel
-  11 Music Box
-  12 Vibraphone
-  13 Marimba
-  14 Xylophone
-  15 Tubular Bells
-  16 Dulcimer
+  1. Celesta
+  2. Glockenspiel
+  3. Music Box
+  4. Vibraphone
+  5. Marimba
+  6. Xylophone
+  7. Tubular Bells
+  8. Dulcimer
 
-  #### Organ
+  #### Organ (:organ)
 
-  17 Drawbar Organ
-  18 Percussive Organ
-  19 Rock Organ
-  20 Church Organ
-  21 Reed Organ
-  22 Accordion
-  23 Harmonica
-  24 Tango Accordion
+  1. Drawbar Organ
+  2. Percussive Organ
+  3. Rock Organ
+  4. Church Organ
+  5. Reed Organ
+  6. Accordion
+  7. Harmonica
+  8. Tango Accordion
 
-  #### Guitar
+  #### Guitar (:guitar)
 
-  25 Acoustic Guitar (nylon)
-  26 Acoustic Guitar (steel)
-  27 Electric Guitar (jazz)
-  28 Electric Guitar (clean)
-  29 Electric Guitar (muted)
-  30 Overdriven Guitar
-  31 Distortion Guitar
-  32 Guitar Harmonics
+  1. Acoustic Guitar (nylon)
+  2. Acoustic Guitar (steel)
+  3. Electric Guitar (jazz)
+  4. Electric Guitar (clean)
+  5. Electric Guitar (muted)
+  6. Overdriven Guitar
+  7. Distortion Guitar
+  8. Guitar Harmonics
 
-  #### Bass
+  #### Bass (:bass)
 
-  33 Acoustic Bass
-  34 Electric Bass (finger)
-  35 Electric Bass (pick)
-  36 Fretless Bass
-  37 Slap Bass 1
-  38 Slap Bass 2
-  39 Synth Bass 1
-  40 Synth Bass 2
+  1. Acoustic Bass
+  2. Electric Bass (finger)
+  3. Electric Bass (pick)
+  4. Fretless Bass
+  5. Slap Bass 1
+  6. Slap Bass 2
+  7. Synth Bass 1
+  8. Synth Bass 2
 
-  #### Strings
+  #### Strings (:strings)
 
-  41 Violin
-  42 Viola
-  43 Cello
-  44 Contrabass
-  45 Tremolo Strings
-  46 Pizzicato Strings
-  47 Orchestral Harp
-  48 Timpani
+  1. Violin
+  2. Viola
+  3. Cello
+  4. Contrabass
+  5. Tremolo Strings
+  6. Pizzicato Strings
+  7. Orchestral Harp
+  8. Timpani
 
-  #### Ensemble
+  #### Ensemble (:ensemble)
 
-  49 String Ensemble 1
-  50 String Ensemble 2
-  51 Synth Strings 1
-  52 Synth Strings 2
-  53 Choir Aahs
-  54 Voice Oohs
-  55 Synth Choir
-  56 Orchestra Hit
+  1. String Ensemble 1
+  2. String Ensemble 2
+  3. Synth Strings 1
+  4. Synth Strings 2
+  5. Choir Aahs
+  6. Voice Oohs
+  7. Synth Choir
+  8. Orchestra Hit
 
-  #### Brass
+  #### Brass (:brass)
 
-  57 Trumpet
-  58 Trombone
-  59 Tuba
-  60 Muted Trumpet
-  61 French Horn
-  62 Brass Section
-  63 Synth Brass 1
-  64 Synth Brass 2
+  1. Trumpet
+  2. Trombone
+  3. Tuba
+  4. Muted Trumpet
+  5. French Horn
+  6. Brass Section
+  7. Synth Brass 1
+  8. Synth Brass 2
 
-  #### Reed
+  #### Reed (:reed)
 
-  65 Soprano Sax
-  66 Alto Sax
-  67 Tenor Sax
-  68 Baritone Sax
-  69 Oboe
-  70 English Horn
-  71 Bassoon
-  72 Clarinet
+  1. Soprano Sax
+  2. Alto Sax
+  3. Tenor Sax
+  4 Baritone Sax
+  5. Oboe
+  6. English Horn
+  7. Bassoon
+  8. Clarinet
 
-  #### Pipe
+  #### Pipe (:pipe)
 
-  73 Piccolo
-  74 Flute
-  75 Recorder
-  76 Pan Flute
-  77 Blown bottle
-  78 Shakuhachi
-  79 Whistle
-  80 Ocarina
+  1. Piccolo
+  2. Flute
+  3. Recorder
+  4. Pan Flute
+  5. Blown bottle
+  6. Shakuhachi
+  7. Whistle
+  8. Ocarina
 
-  #### Synth Lead
+  #### Synth Lead (:synth_lead)
 
-  81 Lead 1 (square)
-  82 Lead 2 (sawtooth)
-  83 Lead 3 (calliope)
-  84 Lead 4 (chiff)
-  85 Lead 5 (charang)
-  86 Lead 6 (voice)
-  87 Lead 7 (fifths)
-  88 Lead 8 (bass + lead)
+  1. Lead 1 (square)
+  2. Lead 2 (sawtooth)
+  3. Lead 3 (calliope)
+  4. Lead 4 (chiff)
+  5. Lead 5 (charang)
+  6. Lead 6 (voice)
+  7. Lead 7 (fifths)
+  8. Lead 8 (bass + lead)
 
-  #### Synth Pad
+  #### Synth Pad (:synth_pad)
 
-  89 Pad 1 (new age)
-  90 Pad 2 (warm)
-  91 Pad 3 (polysynth)
-  92 Pad 4 (choir)
-  93 Pad 5 (bowed)
-  94 Pad 6 (metallic)
-  95 Pad 7 (halo)
-  96 Pad 8 (sweep)
+  1. Pad 1 (new age)
+  2. Pad 2 (warm)
+  3. Pad 3 (polysynth)
+  4. Pad 4 (choir)
+  5. Pad 5 (bowed)
+  6. Pad 6 (metallic)
+  7. Pad 7 (halo)
+  8. Pad 8 (sweep)
 
-  #### Synth Effects
+  #### Synth Effects (:synth_effects)
 
-  97 FX 1 (rain)
-  98 FX 2 (soundtrack)
-  99 FX 3 (crystal)
-  100 FX 4 (atmosphere)
-  101 FX 5 (brightness)
-  102 FX 6 (goblins)
-  103 FX 7 (echoes)
-  104 FX 8 (sci-fi)
+  1. FX 1 (rain)
+  2. FX 2 (soundtrack)
+  3. FX 3 (crystal)
+  4. FX 4 (atmosphere)
+  5. FX 5 (brightness)
+  6. FX 6 (goblins)
+  7. FX 7 (echoes)
+  8. FX 8 (sci-fi)
 
-  #### Ethnic
+  #### Ethnic (:ethnic)
 
-  105 Sitar
-  106 Banjo
-  107 Shamisen
-  108 Koto
-  109 Kalimba
-  110 Bagpipe
-  111 Fiddle
-  112 Shanai
+  1. Sitar
+  2. Banjo
+  3. Shamisen
+  4. Koto
+  5. Kalimba
+  6. Bagpipe
+  7. Fiddle
+  8. Shanai
 
-  #### Percussive
+  #### Percussive (:percussive)
 
-  113 Tinkle Bell
-  114 Agogo
-  115 Steel Drums
-  116 Woodblock
-  117 Taiko Drum
-  118 Melodic Tom
-  119 Synth Drum
-  120 Reverse Cymbal
+  1. Tinkle Bell
+  2. Agogo
+  3. Steel Drums
+  4. Woodblock
+  5. Taiko Drum
+  6. Melodic Tom
+  7. Synth Drum
+  8. Reverse Cymbal
 
-  #### Sound effects
+  #### Sound effects (:sound_effects)
 
-  121 Guitar Fret Noise
-  122 Breath Noise
-  123 Seashore
-  124 Bird Tweet
-  125 Telephone Ring
-  126 Helicopter
-  127 Applause
-  128 Gunshot
+  1. Guitar Fret Noise
+  2. Breath Noise
+  3. Seashore
+  4. Bird Tweet
+  5. Telephone Ring
+  6. Helicopter
+  7. Applause
+  8. Gunshot
   """
 
   @sounds %{
@@ -212,22 +214,25 @@ defmodule MagicFlute.Instrument do
     sound_effects: 121..128
   }
 
-  def play(note, duration, velocity, _instrument = {sound, variant}) do
-    apply_note(note, duration, velocity, sound_from_atom(sound), variant)
+  @doc """
+  Plays a note `{tone, duration, velocity}` on the given instrument `{sound, variant}`.
+  """
+  def play(note, _instrument = {sound, variant}) do
+    apply_note(note, sound_from_atom(sound), variant)
   end
 
   defp sound_from_atom(sound) do
     Map.get(@sounds, sound, -1)
   end
 
-  defp apply_note(note, duration, velocity, sound.._, variant) when variant <= 7 do
+  defp apply_note({tone, duration, velocity}, sound.._, variant) when variant <= 8 do
     sound
     |> Kernel.+(variant)
     |> MidiSynth.change_program()
 
-    MidiSynth.play(note, duration, velocity)
-    {note, duration, velocity}
+    MidiSynth.play(tone, duration, velocity)
+    {tone, duration, velocity}
   end
 
-  defp apply_note(_, _, _, _, _), do: :invalid_instrument_sound
+  defp apply_note(_, _, _), do: :invalid_instrument_sound
 end

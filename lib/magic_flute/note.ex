@@ -1,18 +1,32 @@
 defmodule MagicFlute.Note do
   @moduledoc """
-  This module exposes the `~n` sigill, for quick notation:
+  This function defines musical notation and helpers to describe musical notes in Elixir
+
+  ## The ~n Sigill
+  The `~n` sigill allows you to quickly describe a *note* (hence `~n`). It converts the input data to a tuple `{tone, duration, velocity}` that can be used with MIDI interfaces.
 
   ```
-  # C note in 3rd octave, with duration 10ms played with velocity *ppp*
+  # C note in 3rd octave, with duration 10ms played with velocity ppp (pianissimo)
   ~n(c3 10 ppp)
 
-  # G# note in 2nd negative octave, with duration 10ms played with velocity *mf*
+  # G# note in 2nd negative octave, with duration 10ms played with velocity mf (mezzo-forte)
   ~n(g#-2 10 mf)
+  ```
+
+  ## Scales
+  Use the `MagicFlute.Note.scale/3` function to return a list of tone codes for a given scale, tone and octave range.
+
+  ```
+  # Return all tone codes in the C Major scalle for the 2nd and 3rd octave
+  MagicFlute.Note.scale(:major, "c", 2..3)
+
+  # Return all tone codes in the G# Harmonic Minor scalle for the 3rd octave
+  MagicFlute.Note.scale(:minor_harmonic, "g#", 3..3)
   ```
 
   ## Musical Dynamics
 
-  The velocities are defined according to **Logic Pro 9 dynamics**. Source: [Musical Dynamics on Wikipedia](https://en.wikipedia.org/wiki/Dynamics_(music)).
+  The available velocities are defined according to **Logic Pro 9 dynamics**. Source: [Musical Dynamics on Wikipedia](https://en.wikipedia.org/wiki/Dynamics_(music)).
 
   ```
   :ppp  # 16
@@ -20,7 +34,7 @@ defmodule MagicFlute.Note do
   :p    # 48
   :mp   # 64
   :mf   # 80
-  ;f    # 96
+  :f    # 96
   :ff   # 112
   :fff  # 127
   ```
@@ -71,9 +85,9 @@ defmodule MagicFlute.Note do
     |> parse_new()
   end
 
-  def scale(scale, key, range \\ -2..8) do
+  def scale(scale, tone, range \\ -2..8) do
     ratios = Map.get(@scales, scale, :invalid_scale)
-    base_note = parse_base_note(key)
+    base_note = parse_base_note(tone)
 
     Enum.map(range, fn octave ->
       base_in_octave = calculate_note(base_note, octave)

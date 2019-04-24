@@ -1,4 +1,6 @@
 defmodule MagicFlute.DemoEnsemble.MetronomePlayer do
+  @moduledoc false
+
   use MagicFlute.Player, instrument: {:percussive, 3}
 
   def read_notes(bar, 1) do

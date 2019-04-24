@@ -1,4 +1,41 @@
 defmodule MagicFlute.Player do
+  @moduledoc """
+  * The player plays a specific `MagicFlute.Instrument` sound setting.
+  * The player reads notes and plays them on the queue of the `MagicFlute.Conductor`.
+
+  ## Example
+
+  ```
+  defmodule FlutePlayer do
+
+    use MagicFlute.Player, instrument: {:pipe, 2}
+
+    # Will play '~n(d3 5 ff)' on the first beat of every bar in the performance
+    def read_notes(bar, 1) do
+      [
+        ~n(d3 5 ff)
+      ]
+    end
+
+    # Will play `~n(c3 5 mp)` on every quarter beat of every bar in the performance
+    def read_notes(bar, beat) when beat == 5 or beat == 9 or beat == 13 do
+      [
+        ~n(c3 5 mp)
+      ]
+    end
+
+    # Will play `~n(c3 5 pp)` on every eight beat of every bar in the performance
+    def read_notes(bar, beat) when rem(beat, 2) != 0 do
+      [
+        ~n(c3 5 pp)
+      ]
+    end
+  end
+  ```
+
+
+  """
+
   defmacro __using__(opts) do
     quote bind_quoted: [opts: opts] do
       import MagicFlute.Player
@@ -71,14 +108,14 @@ defmodule MagicFlute.Player do
       end
 
       def play_notes(notes) do
-        Enum.map(notes, fn {note, duration, velocity} ->
-          Task.async(fn -> play_note(note, duration, velocity) end)
+        Enum.map(notes, fn note ->
+          Task.async(fn -> play_note(note) end)
         end)
         |> Enum.map(&Task.await/1)
       end
 
-      def play_note(note, duration, velocity) do
-        MagicFlute.Instrument.play(note, duration, velocity, @instrument)
+      def play_note(note) do
+        MagicFlute.Instrument.play(note, @instrument)
       end
     end
   end
