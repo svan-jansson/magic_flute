@@ -1,9 +1,8 @@
 defmodule MagicFlute.Conductor do
   @moduledoc """
+  The Conductor is the entrypoint for playing a performance. She keeps the beat, knows when to end the performance and instructs the instrumentalists (`MagicFlute.Player`) when to play their notes.
 
   > Conducting: The art of directing the simultaneous performance of several players or singers by the use of gesture. -Sir George Grove, John Alexander Fuller-Maitland
-
-  The Conductor is the entrypoint for playing a performance. She keeps the beat, knows when to end the performance and instructs the instrumentalists (`MagicFlute.Player`) when to play their notes.
 
   ```text
   +-------------+

@@ -1,6 +1,6 @@
 defmodule MagicFlute.Note do
   @moduledoc """
-  This function defines musical notation and helpers to describe musical notes in Elixir
+  This module defines musical notation and helpers to describe musical notes in Elixir
 
   ## The ~n Sigill
   The `~n` sigill allows you to quickly describe a *note* (hence `~n`). It converts the input data to a tuple `{tone, duration, velocity}` that can be used with MIDI interfaces.

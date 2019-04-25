@@ -1,4 +1,6 @@
 defmodule MagicFlute do
+  @moduledoc false
+
   alias MagicFlute.{Conductor, DemoEnsemble}
 
   def demo() do

@@ -1,6 +1,8 @@
 defmodule MagicFlute.Instrument do
   @moduledoc """
 
+  Interface for fluidsynth. Uses .sf2 files. Follows General MIDI standard with 127 different sound settings.
+
   ## General MIDI
   The `MagicFlute.Instrument` assumes that the .sf2 file contains a synthesizer that follows [General MIDI](https://en.wikipedia.org/wiki/General_MIDI)
 
