@@ -29,8 +29,8 @@ defmodule MagicFlute do
     Conductor.start_performance(ensemble, bpm, signature, 4)
   end
 
-  def play_scale() do
-    MagicFlute.Note.scale(:minor_melodic, "a", 2..2)
+  def play_scale(scale) do
+    MagicFlute.Note.scale(scale, "eb", 1..2)
     |> Enum.map(fn tone ->
       MagicFlute.Instrument.play({tone, 10, 100}, {:piano, 1})
       :timer.sleep(250)
