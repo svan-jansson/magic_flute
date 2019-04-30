@@ -71,11 +71,25 @@ defmodule MagicFlute.Note do
     {"b", 11}
   ]
 
+  """
+  Mode 	Name 	      Scale on C 	          Associated chord
+  I 	  Ionian 	    C–D–E–F–G–A–B–C 	    C major 7 (9, 13)
+  II 	  Dorian 	    C–D–E♭–F–G–A–B♭–C 	  C-6 or C-7 (9, 11, 13)
+  III 	Phrygian 	  C–D♭–E♭–F–G–A♭–B♭–C 	C-7 (11)
+  IV 	  Lydian 	    C–D–E–F♯–G–A–B–C 	    C major 7 (9, ♯11, 13)
+  V 	  Mixolydian 	C–D–E–F–G–A–B♭–C 	    C7 (9, 13)
+  VI 	  Aeolian 	  C–D–E♭–F–G–A♭–B♭–C 	  C-7 (9, 11)
+  VII 	Locrian 	  C–D♭–E♭–F–G♭–A♭–B♭–C 	C-7♭5 (11, ♭13)
+  """
+
   @scales %{
     major: [0, 2, 2, 1, 2, 2, 2, 1],
     minor: [0, 2, 1, 2, 2, 1, 2, 2],
     minor_harmonic: [0, 2, 1, 2, 2, 1, 3, 1],
-    minor_melodic: [0, 2, 1, 2, 2, 2, 2, 1]
+    minor_melodic: [0, 2, 1, 2, 2, 2, 2, 1],
+    chromatic: [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    whole_tone: [0, 2, 2, 2, 2, 2],
+    diminished: [0, 2, 1, 2, 1, 2, 1, 2]
   }
 
   def sigil_n(string, []) when is_binary(string) do
