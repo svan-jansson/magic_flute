@@ -32,14 +32,12 @@ defmodule MagicFlute.Player do
     end
   end
   ```
-
-
   """
 
   defmacro __using__(opts) do
     quote bind_quoted: [opts: opts] do
       import MagicFlute.Player
-      import MagicFlute.Note
+      import MagicFlute.MusicNotation
 
       use GenServer
 

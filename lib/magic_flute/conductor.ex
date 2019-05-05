@@ -10,11 +10,11 @@ defmodule MagicFlute.Conductor do
   |  Conductor  | Keeps track of the beat and when the performance ends.
   |             | Gives time queues to the ensemble (players)
   +------+------+
-       |
-       |
-       | Timing instructions
-       |
-       v
+         |
+         |
+         | Timing instructions
+         |
+         v
   +------+------+
   |             |
   |  Player(s)  | Plays notes using timing from Conductor
