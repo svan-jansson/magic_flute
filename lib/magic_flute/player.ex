@@ -95,11 +95,25 @@ defmodule MagicFlute.Player do
          }}
       end
 
+      # Translate provided sheet notes to read_notes function definitions
+      case Keyword.fetch(opts, :note_sheet) do
+        {:ok, note_sheet} ->
+          Enum.each(note_sheet, fn {bar_range, module, function} ->
+            Enum.each(bar_range, fn bar ->
+              def read_notes(unquote(bar), beat),
+                do: apply(unquote(module), unquote(function), [unquote(bar), beat])
+            end)
+          end)
+
+        {:error, _ingore} ->
+          :note_sheet_not_provided
+      end
+
       @before_compile MagicFlute.Player
     end
   end
 
-  defmacro __before_compile__(_env) do
+  defmacro __before_compile__(_opts) do
     quote do
       def read_notes(_bar, _beat) do
         []
