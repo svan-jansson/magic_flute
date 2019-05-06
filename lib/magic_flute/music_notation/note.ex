@@ -3,7 +3,7 @@ defmodule MagicFlute.MusicNotation.Note do
   Translates note literals into MIDI note values
   """
 
-  @typedoc "A note is represented by it's MIDI value"
+  @typedoc "A note is represented by its MIDI integer value"
   @type t() :: 0..127 | :invalid_note | :invalid_octave
 
   @typedoc "Note types can be described as strings or atoms"
@@ -48,7 +48,7 @@ defmodule MagicFlute.MusicNotation.Note do
   ]
 
   @doc """
-  Converts a note literal to a MIDI note pitch
+  Converts a note literal to a MIDI integer value
   """
   @spec to_midi(note_type()) :: t()
   def to_midi(literal) do
