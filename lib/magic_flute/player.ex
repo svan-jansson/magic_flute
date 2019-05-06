@@ -10,24 +10,24 @@ defmodule MagicFlute.Player do
 
     use MagicFlute.Player, instrument: {:pipe, 2}
 
-    # Will play '~n(d3 5 ff)' on the first beat of every bar in the performance
+    # Will play '~n(D3 5 ff)' on the first beat of every bar in the performance
     def read_notes(bar, 1) do
       [
-        ~n(d3 5 ff)
+        ~n(D3 5 ff)
       ]
     end
 
-    # Will play `~n(c3 5 mp)` on every quarter beat of every bar in the performance
+    # Will play `~n(C3 5 mp)` on every quarter beat of every bar in the performance
     def read_notes(bar, beat) when beat == 5 or beat == 9 or beat == 13 do
       [
-        ~n(c3 5 mp)
+        ~n(C3 5 mp)
       ]
     end
 
-    # Will play `~n(c3 5 pp)` on every eight beat of every bar in the performance
+    # Will play `~n(C3 5 pp)` on every eight beat of every bar in the performance
     def read_notes(bar, beat) when rem(beat, 2) != 0 do
       [
-        ~n(c3 5 pp)
+        ~n(C3 5 pp)
       ]
     end
   end

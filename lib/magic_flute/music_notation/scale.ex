@@ -5,12 +5,12 @@ defmodule MagicFlute.MusicNotation.Scale do
 
   alias MagicFlute.MusicNotation.Note
 
-  @typedoc """
-  Atoms describing musical scales: `:major, :minor, :minor_harmonic, :minor_melodic, :chromatic, :whole_tone, :diminished`
-  """
-  @type t() ::
-          :invalid_scale
-          | :major
+  @typedoc "A scale consists of a list of MIDI note values"
+  @type t() :: list(pos_integer()) | :invalid_scale
+
+  @typedoc "Scale types are described as atoms"
+  @type scale_type() ::
+          :major
           | :minor
           | :minor_harmonic
           | :minor_melodic
@@ -29,10 +29,18 @@ defmodule MagicFlute.MusicNotation.Scale do
   }
 
   @doc """
-  Returns a list of notes in the given scale
+  Returns a list of notes for a given scale, tone and octave range.
+
+  ```
+  # Return all notes in the C Major scale for the 2nd and 3rd octave
+  MagicFlute.MusicNotation.Scale.get_notes("C", :major, 2..3)
+
+  # Return all notes in the G# Harmonic Minor scale for the 3rd octave
+  MagicFlute.MusicNotation.Scale.get_notes("G#", :minor_harmonic, 3..3)
+  ```
   """
-  @spec scale(Note.t(), t(), Range.t()) :: list(Note.t())
-  def scale(note, scale, range \\ -2..8) do
+  @spec get_notes(Note.t(), scale_type(), Range.t()) :: t()
+  def get_notes(note, scale, range \\ -2..8) do
     ratios = Map.get(@scale_steps, scale, :invalid_scale)
 
     Enum.map(range, fn octave ->

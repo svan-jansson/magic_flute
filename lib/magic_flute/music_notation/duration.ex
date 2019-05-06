@@ -3,8 +3,11 @@ defmodule MagicFlute.MusicNotation.Duration do
   Translates musical note length notation to clock time
   """
 
-  @typedoc "Note duration in milliseconds"
-  @type t() ::
+  @typedoc "A duration is described in milliseconds"
+  @type t() :: pos_integer() | :invalid_duration
+
+  @typedoc "A duration type can be a string or an atom"
+  @type duration_type() ::
           String.t() | :whole | :half | :quarter | :eighth | :sixteenth | :thirtysecondth
 
   @duration_ratios %{
@@ -25,7 +28,7 @@ defmodule MagicFlute.MusicNotation.Duration do
       50
 
   """
-  @spec to_milliseconds(t()) :: pos_integer() | :invalid_duration
+  @spec to_milliseconds(duration_type()) :: t()
   def to_milliseconds(duration_string) when is_binary(duration_string) do
     try do
       String.to_integer(duration_string)
@@ -43,7 +46,7 @@ defmodule MagicFlute.MusicNotation.Duration do
       500
 
   """
-  @spec to_milliseconds(t(), pos_integer()) :: pos_integer() | :invalid_duration
+  @spec to_milliseconds(duration_type(), pos_integer()) :: t()
   def to_milliseconds(duration, bpm) when is_atom(duration) and is_integer(bpm) do
     try do
       @duration_ratios

@@ -19,7 +19,7 @@ defmodule MagicFlute.DemoEnsemble.SynthPlayer do
   def intro(bar, beat) do
     IO.inspect(:intro)
 
-    # chord(:c, :minor_harmonic, 2..5)
+    # chord(:c, :minor_harmonic, :tonic, 2..5)
     # |> arpeggiator(bar, beat)
     []
   end

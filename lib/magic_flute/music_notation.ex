@@ -1,34 +1,23 @@
 defmodule MagicFlute.MusicNotation do
   @moduledoc """
   This module defines musical notation and helpers to describe musical notes in Elixir
-
-  ## The ~n Sigill
-  The `~n` sigill allows you to quickly describe a *note* (hence *~n*). It converts the input data to a tuple `{tone, duration, velocity}` that can be used with MIDI interfaces.
-
-  ```
-  # C note in 3rd octave, with duration 10ms played with velocity ppp (pianissimo)
-  ~n(c3 10 ppp)
-
-  # G# note in 2nd negative octave, with duration 10ms played with velocity mf (mezzo-forte)
-  ~n(g#-2 10 mf)
-  ```
-
-  ## Scales
-  Use the `MagicFlute.Note.scale/3` function to return a list of tone codes for a given scale, tone and octave range.
-
-  ```
-  # Return all tone codes in the C Major scale for the 2nd and 3rd octave
-  MagicFlute.Note.scale("c", :major, 2..3)
-
-  # Return all tone codes in the G# Harmonic Minor scale for the 3rd octave
-  MagicFlute.Note.scale("g#", :minor_harmonic, 3..3)
-  ```
   """
 
   alias MagicFlute.MusicNotation.{Duration, Note, Velocity}
 
   @type t() :: {Note.t(), Duration.t(), Velocity.t()}
 
+  @doc """
+  The `~n` sigill allows you to quickly describe a *note* (hence *~n*). It converts the input data to a tuple `{tone, duration, velocity}` that can be used with MIDI interfaces.
+
+  ```
+  # C note in 3rd octave, with duration 10ms played with velocity ppp (pianissimo)
+  ~n(C3 10 ppp)
+
+  # G# note in 2nd negative octave, with duration 10ms played with velocity mf (mezzo-forte)
+  ~n(G#-2 10 mf)
+  ```
+  """
   def sigil_n(string, []) when is_binary(string) do
     string
     |> String.split()

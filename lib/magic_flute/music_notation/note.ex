@@ -3,54 +3,11 @@ defmodule MagicFlute.MusicNotation.Note do
   Translates note literals into MIDI note values
   """
 
-  @typedoc """
-  Notes can be described as strings or atoms
+  @typedoc "A note is represented by it's MIDI value"
+  @type t() :: 0..127 | :invalid_note | :invalid_octave
 
-  ** String Notes **
-
-  ```
-  "c"
-  "c#"
-  "db"
-  "d"
-  "d#"
-  "eb"
-  "e"
-  "f"
-  "f#"
-  "gb"
-  "g"
-  "g#"
-  "ab"
-  "a"
-  "a#"
-  "bb"
-  "b"
-  ```
-
-  ** Atom Notes **
-
-  ```
-  :c
-  :c_sharp
-  :d_flat
-  :d
-  :d_sharp
-  :e_flat
-  :e
-  :f
-  :f_sharp
-  :g_flat
-  :g
-  :g_sharp
-  :a_flat
-  :a
-  :a_sharp
-  :b_flat
-  :b
-  ```
-  """
-  @type t() ::
+  @typedoc "Note types can be described as strings or atoms"
+  @type note_type() ::
           String.t()
           | :c
           | :c_sharp
@@ -71,29 +28,29 @@ defmodule MagicFlute.MusicNotation.Note do
           | :b
 
   @base_notes [
-    {"c", :c, 0},
-    {"c#", :c_sharp, 1},
-    {"db", :d_flat, 1},
-    {"d", :d, 2},
-    {"d#", :d_sharp, 3},
-    {"eb", :e_flat, 3},
-    {"e", :e, 4},
-    {"f", :f, 5},
-    {"f#", :f_sharp, 6},
-    {"gb", :g_flat, 6},
-    {"g", :g, 7},
-    {"g#", :g_sharp, 8},
-    {"ab", :a_flat, 8},
-    {"a", :a, 9},
-    {"a#", :a_sharp, 10},
-    {"bb", :b_flat, 10},
-    {"b", :b, 11}
+    {"C", :c, 0},
+    {"C#", :c_sharp, 1},
+    {"Db", :d_flat, 1},
+    {"D", :d, 2},
+    {"D#", :d_sharp, 3},
+    {"Eb", :e_flat, 3},
+    {"E", :e, 4},
+    {"F", :f, 5},
+    {"F#", :f_sharp, 6},
+    {"Gb", :g_flat, 6},
+    {"G", :g, 7},
+    {"G#", :g_sharp, 8},
+    {"Ab", :a_flat, 8},
+    {"A", :a, 9},
+    {"A#", :a_sharp, 10},
+    {"Bb", :b_flat, 10},
+    {"B", :b, 11}
   ]
 
   @doc """
   Converts a note literal to a MIDI note pitch
   """
-  @spec to_midi(t()) :: 0..11 | :invalid_note
+  @spec to_midi(note_type()) :: t()
   def to_midi(literal) do
     parse_base_note(literal)
   end
@@ -101,7 +58,7 @@ defmodule MagicFlute.MusicNotation.Note do
   @doc """
   Converts a note literal to a MIDI note pitch, adjusted to given octave
   """
-  @spec to_midi(t(), -2..8) :: 0..127 | :invalid_note | :invalid_octave
+  @spec to_midi(note_type(), -2..8) :: t()
   def to_midi(literal, octave) do
     to_midi(literal)
     |> adjust_octave(octave)
@@ -123,8 +80,8 @@ defmodule MagicFlute.MusicNotation.Note do
     {_string, _atom, base_note_index} =
       Enum.find(
         @base_notes,
-        fn {string, _atom, _base_note_index} -> string == base_note end,
-        :invalid_base_note
+        :invalid_base_note,
+        fn {string, _atom, _base_note_index} -> string == base_note end
       )
 
     base_note_index
@@ -134,8 +91,8 @@ defmodule MagicFlute.MusicNotation.Note do
     {_string, _atom, base_note_index} =
       Enum.find(
         @base_notes,
-        fn {_string, atom, _base_note_index} -> atom == base_note end,
-        :invalid_base_note
+        :invalid_base_note,
+        fn {_string, atom, _base_note_index} -> atom == base_note end
       )
 
     base_note_index
