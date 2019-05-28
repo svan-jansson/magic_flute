@@ -24,7 +24,7 @@ Play music programatically with Elixir
 
 ## Target Idea
 
-* Players distrited on separate nodes
+* Players distributed on separate nodes
 * Run node on device (phone or such)
 * Modify note sheet / chords by user input on device
 
